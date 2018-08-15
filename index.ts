@@ -43,11 +43,15 @@ export {
 
 export {
   AfterDelete,
+  AfterInsert,
   AfterReload,
   AfterSave,
+  AfterUpdate,
   AfterValidate,
   BeforeDelete,
+  BeforeInsert,
   BeforeReload,
   BeforeSave,
+  BeforeUpdate,
   BeforeValidate
 } from './src/hooks';

@@ -1,10 +1,10 @@
 # ModelJS MongoDB
 
-ModelJS MongoDB is a wrapper for MongoDB Node.js driver enclosing documents in ModelJS Models and Collections
+ModelJS MongoDB is a wrapper for MongoDB Node.js driver enclosing documents in [ModelJS Models and Collections](https://github.com/ronaldborla/model)
 
 # Installation
 
-    npm install javascript-model-mongodb --save
+    npm install model-mongodb --save
 
 # Testing
 

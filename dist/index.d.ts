@@ -13,4 +13,4 @@ import Permalink from './src/types/permalink.type';
 import Timestamp from './src/types/timestamp.type';
 export { Collection, DeleteOptions, Exception, Key, Model, ModelJS, NavigationResults, ReloadOptions, SaveOptions, Schema, Type, TypeConfig, TypeConfigInterface, Utils, utils, ValidateOptions, ValidationResult, Validator };
 export { Id, Password, Permalink, Timestamp };
-export { AfterDelete, AfterReload, AfterSave, AfterValidate, BeforeDelete, BeforeReload, BeforeSave, BeforeValidate } from './src/hooks';
+export { AfterDelete, AfterInsert, AfterReload, AfterSave, AfterUpdate, AfterValidate, BeforeDelete, BeforeInsert, BeforeReload, BeforeSave, BeforeUpdate, BeforeValidate } from './src/hooks';

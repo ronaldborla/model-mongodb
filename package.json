@@ -1,12 +1,12 @@
 {
-  "name": "javascript-model-mongodb",
+  "name": "model-mongodb",
   "version": "1.0.0",
   "description": "ModelJS wrapper for MongDB Node.js driver",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --p tsconfig.json",
     "test": "npm run build && tsc --p tsconfig-test.json && mocha --timeout 30000 --exit ./test/index",
-    "test:default": "CONN=mongodb://localhost:27017 DB=javascript-model-mongodb-test COUNT=100 npm run test"
+    "test:default": "CONN=mongodb://localhost:27017 DB=model-mongodb-test COUNT=100 npm run test"
   },
   "repository": {
     "type": "git",
