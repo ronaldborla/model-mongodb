@@ -1,6 +1,6 @@
 {
   "name": "model-mongodb",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ModelJS wrapper for MongDB Node.js driver",
   "main": "dist/index.js",
   "scripts": {
