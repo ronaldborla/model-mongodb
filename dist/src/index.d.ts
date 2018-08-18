@@ -42,10 +42,6 @@ export default class ModelJS extends Base {
     db: Db;
     constructor();
     /**
-     * Boot
-     */
-    boot(): this;
-    /**
      * Close database
      */
     close(force?: boolean): Promise<this>;

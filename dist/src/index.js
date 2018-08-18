@@ -63,16 +63,9 @@ class ModelJS extends javascript_model_1.ModelJS {
             permalink_type_1.default,
             timestamp_type_1.default
         ]);
-    }
-    /**
-     * Boot
-     */
-    boot() {
         [email_validator_1.default, enum_validator_1.default, max_validator_1.default, min_validator_1.default, required_validator_1.default].forEach((validator) => {
             this.validators[validator.name] = validator;
         });
-        javascript_model_1.ModelJS.prototype.boot.apply(this, []);
-        return this;
     }
     /**
      * Close database

@@ -80,17 +80,9 @@ export default class ModelJS extends Base {
       Permalink,
       Timestamp
     ]);
-  }
-
-  /**
-   * Boot
-   */
-  boot(): this {
     [email, enumv, max, min, required].forEach((validator: ValidatorInterface) => {
       this.validators[validator.name] = validator;
     });
-    Base.prototype.boot.apply(this, []);
-    return this;
   }
 
   /**
