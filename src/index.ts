@@ -3,7 +3,7 @@ import Exception from './exception';
 import Key from './key';
 import Schema from './schema';
 import Type, { TypeConfig } from './type';
-import Validator, { ValidationResult } from './validator';
+import Validator, { ValidationResult, ValidatorInterface } from './validator';
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 import utils from './utils';
 /**
@@ -86,7 +86,7 @@ export default class ModelJS extends Base {
    * Boot
    */
   boot(): this {
-    [email, enumv, max, min, required].forEach((validator: any) => {
+    [email, enumv, max, min, required].forEach((validator: ValidatorInterface) => {
       this.validators[validator.name] = validator;
     });
     Base.prototype.boot.apply(this, []);
