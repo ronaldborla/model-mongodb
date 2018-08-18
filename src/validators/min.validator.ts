@@ -1,10 +1,11 @@
 import Key from '../key';
 import utils from '../utils';
+import { ValidatorInterface } from '../validator';
 
 /**
  * Min field
  */
-const min = {
+const min: ValidatorInterface = {
   callback: function(value: any, key: Key, options: Array<string>): boolean {
     return value >= parseFloat(options[0]);
   },

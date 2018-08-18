@@ -1,10 +1,6 @@
-import Key from '../key';
+import { ValidatorInterface } from '../validator';
 /**
  * Field is required validator
  */
-declare const required: {
-    callback: (value: any, key: Key) => boolean;
-    message: (value: any, key: Key) => string;
-    name: string;
-};
+declare const required: ValidatorInterface;
 export default required;

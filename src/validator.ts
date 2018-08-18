@@ -5,6 +5,19 @@ import Key from './key';
 import utils from './utils';
 
 /**
+ * Validator interface
+ */
+export interface ValidatorInterface {
+  block?: boolean;
+  callback?: (value: any, key: Key, options?: Array<any>) => boolean | string | null | Promise<boolean | string | null>;
+  init?: () => void;
+  message?: string | ((value: any, key: Key, options?: Array<any>) => string | Promise<string>);
+  name: string;
+  options?: Array<any>;
+  regex?: RegExp;
+}
+
+/**
  * ValidationResult
  */
 export class ValidationResult {

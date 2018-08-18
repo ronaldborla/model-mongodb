@@ -1,11 +1,6 @@
-import Key from '../key';
+import { ValidatorInterface } from '../validator';
 /**
  * Max field
  */
-declare const max: {
-    callback: (value: any, key: Key, options: string[]) => boolean;
-    init: () => void;
-    message: (value: any, key: Key, options: string[]) => string;
-    name: string;
-};
+declare const max: ValidatorInterface;
 export default max;

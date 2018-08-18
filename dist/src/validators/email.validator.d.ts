@@ -1,11 +1,6 @@
-import Key from '../key';
-import Model from '../model';
+import { ValidatorInterface } from '../validator';
 /**
  * Field is email validator
  */
-declare const email: {
-    regex: RegExp;
-    message: (model: Model, key: Key, value: any) => string;
-    name: string;
-};
+declare const email: ValidatorInterface;
 export default email;

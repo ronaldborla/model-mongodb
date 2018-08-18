@@ -1,11 +1,12 @@
 import { replace, snakeCase } from 'lodash';
 import Key from '../key';
 import utils from '../utils';
+import { ValidatorInterface } from '../validator';
 
 /**
  * Enum field
  */
-const enumv = {
+const enumv: ValidatorInterface = {
   callback: function(value: any, key: Key, options: Array<string>): boolean {
     return options.indexOf(value) >= 0;
   },

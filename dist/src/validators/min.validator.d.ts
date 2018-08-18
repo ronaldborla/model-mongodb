@@ -1,11 +1,6 @@
-import Key from '../key';
+import { ValidatorInterface } from '../validator';
 /**
  * Min field
  */
-declare const min: {
-    callback: (value: any, key: Key, options: string[]) => boolean;
-    init: () => void;
-    message: (value: any, key: Key, options: string[]) => string;
-    name: string;
-};
+declare const min: ValidatorInterface;
 export default min;
