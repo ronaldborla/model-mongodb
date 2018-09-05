@@ -7,11 +7,19 @@ import { ValidationResult } from './validator';
 export interface DeleteOptions extends CommonOptions {
 }
 /**
+ *  Populate options
+ */
+export interface PopulateOptions {
+    findOptions?: FindOneOptions;
+    path: string;
+    populate?: Array<string | PopulateOptions>;
+}
+/**
  * Reload options
  */
 export interface ReloadOptions {
     findOptions?: FindOneOptions;
-    depth?: number;
+    populate?: Array<string | PopulateOptions>;
 }
 /**
  * Save options

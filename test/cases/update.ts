@@ -49,8 +49,20 @@ export default function updateDocuments(config: any): void {
       });
     });
     it('should validate the users associated to the companies', (done: Function) => {
-      Companies.find({
-        depth: 2
+      Companies.find({}, {
+        projection: {
+          _id: 1
+        }
+      }, {
+        populate: [
+          'address',
+          {
+            path: 'user',
+            populate: [
+              'address'
+            ]
+          }
+        ]
       }).then((companies: Companies) => {
         companies.forEach((company: Company) => {
           assert.instanceOf(company.user, User, 'company `user` must be an instance of `User`');

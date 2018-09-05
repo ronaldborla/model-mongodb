@@ -19,7 +19,17 @@ export default function readDocuments(config: any): void {
           _id: 1
         }
       }).then((data: Users) => {
-        data.reload({ depth: 2 }).then(() => {
+        data.reload({
+          populate: [
+            'address',
+            {
+              path: 'company',
+              populate: [
+                'address'
+              ]
+            }
+          ]
+        }).then(() => {
           users = data;
           assert.isOk(true, 'retrieved users successfully');
           done();

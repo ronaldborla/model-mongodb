@@ -19,7 +19,17 @@ function readDocuments(config) {
                     _id: 1
                 }
             }).then((data) => {
-                data.reload({ depth: 2 }).then(() => {
+                data.reload({
+                    populate: [
+                        'address',
+                        {
+                            path: 'company',
+                            populate: [
+                                'address'
+                            ]
+                        }
+                    ]
+                }).then(() => {
                     users = data;
                     chai_1.assert.isOk(true, 'retrieved users successfully');
                     done();

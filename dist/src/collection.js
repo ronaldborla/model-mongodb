@@ -6,9 +6,6 @@ const utils_1 = require("./utils");
  * Collection
  */
 class Collection extends javascript_model_1.Collection {
-    constructor(items) {
-        super(items);
-    }
     /**
      * Get collection name
      */
@@ -45,25 +42,6 @@ class Collection extends javascript_model_1.Collection {
                 }
             });
         }
-    }
-    /**
-     * Navigate
-     */
-    static navigate(query, options, preferences) {
-        return this.count(query, preferences).then((count) => {
-            if (count <= 0) {
-                return {
-                    count: count,
-                    results: new this()
-                };
-            }
-            return this.find(query, options).then((collection) => {
-                return {
-                    count: count,
-                    results: collection
-                };
-            });
-        });
     }
     /**
      * Delete multiple

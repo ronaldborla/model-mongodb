@@ -50,8 +50,26 @@ function updateDocuments(config) {
             });
         });
         it('should validate the users associated to the companies', (done) => {
-            companies_collection_1.default.find({
-                depth: 2
+            companies_collection_1.default.find({}, {
+                projection: {
+                    _id: 1
+                }
+            }, {
+                populate: [
+                    'address',
+                    {
+                        findOptions: {
+                            projection: {
+                                _id: 1,
+                                address: 1
+                            }
+                        },
+                        path: 'user',
+                        populate: [
+                            'address'
+                        ]
+                    }
+                ]
             }).then((companies) => {
                 companies.forEach((company) => {
                     chai_1.assert.instanceOf(company.user, user_model_1.default, 'company `user` must be an instance of `User`');

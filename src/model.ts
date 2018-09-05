@@ -69,11 +69,20 @@ function setId(model: Model, data?: any): Model {
 export interface DeleteOptions extends CommonOptions {}
 
 /**
+ *  Populate options
+ */
+export interface PopulateOptions {
+  findOptions?: FindOneOptions;
+  path: string;
+  populate?: Array<string | PopulateOptions>;
+}
+
+/**
  * Reload options
  */
 export interface ReloadOptions {
   findOptions?: FindOneOptions;
-  depth?: number;
+  populate?: Array<string | PopulateOptions>;
 }
 
 /**
@@ -162,8 +171,8 @@ export default class Model extends Base {
    * @return Promise with model
    */
   reload(options?: ReloadOptions): Promise<this> {
-    const depth = (options || {}).depth || 0,
-          findOptions = (options || {}).findOptions || {},
+    const findOptions = (options || {}).findOptions || {},
+          populate = (options || {}).populate || [],
           key = this[id(this).name];
     if (!key) {
       return Promise.reject('`' + schema(this).cache.index.id.name + '` is undefined');
@@ -174,12 +183,16 @@ export default class Model extends Base {
         schema(this).keys.forEach((key: Key) => {
           if (!utils.isUndefined(data[key.name])) {
             this[key.name] = data[key.name];
-            if ((key.type.Constructor.isModel === true || key.type.Constructor.isCollection === true) && depth > 0) {
-              promises.push(this[key.name].reload(extend({}, options, {
-                depth: depth - 1
-              })).then((child: any) => {
-                this[key.name] = child;
-              }));
+            if ((key.type.Constructor.isModel === true || key.type.Constructor.isCollection === true) && (populate.length > 0)) {
+              const populateOptions = getPopulateOptions(key.name);
+              if (populateOptions) {
+                promises.push(this[key.name].reload({
+                  findOptions: populateOptions.findOptions || {},
+                  populate: populateOptions.populate || []
+                }).then((child: any) => {
+                  this[key.name] = child;
+                }));
+              }
             }
           }
         });
@@ -190,6 +203,23 @@ export default class Model extends Base {
     }).then(() => {
       return utils.hook(this, 'afterReload');
     });
+
+    /**
+     * Get populate options
+     */
+    function getPopulateOptions(key: string): PopulateOptions | undefined {
+      const length = populate.length;
+      for (let i = 0; i < length; i++) {
+        if (utils.isString(populate[i]) && populate[i] === key) {
+          return {
+            path: populate[i] as string
+          };
+        } else if (populate[i] && (populate[i] as PopulateOptions).path === key) {
+          return populate[i] as PopulateOptions;
+        }
+      }
+      return utils.undefined;
+    }
   }
 
   /**

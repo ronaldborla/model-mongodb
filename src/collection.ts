@@ -17,21 +17,9 @@ import utils from './utils';
 import { ValidationResult } from './validator';
 
 /**
- * Navigation results
- */
-export interface NavigationResults {
-  count: number;
-  results: Collection;
-}
-
-/**
  * Collection
  */
 export default class Collection extends Base {
-
-  constructor(items?: any) {
-    super(items);
-  }
 
   /**
    * Get collection name
@@ -71,26 +59,6 @@ export default class Collection extends Base {
         }
       });
     }
-  }
-
-  /**
-   * Navigate
-   */
-  static navigate(query?: FilterQuery<any>, options?: FindOneOptions, preferences?: MongoCountPreferences): Promise<NavigationResults> {
-    return this.count(query, preferences).then((count: number) => {
-      if (count <= 0) {
-        return {
-          count: count,
-          results: new this()
-        };
-      }
-      return this.find(query, options).then((collection: Collection) => {
-        return {
-          count: count,
-          results: collection
-        };
-      });
-    });
   }
 
   /**

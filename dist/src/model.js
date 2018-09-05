@@ -112,7 +112,7 @@ class Model extends javascript_model_1.Model {
      * @return Promise with model
      */
     reload(options) {
-        const depth = (options || {}).depth || 0, findOptions = (options || {}).findOptions || {}, key = this[id(this).name];
+        const findOptions = (options || {}).findOptions || {}, populate = (options || {}).populate || [], key = this[id(this).name];
         if (!key) {
             return Promise.reject('`' + schema(this).cache.index.id.name + '` is undefined');
         }
@@ -122,12 +122,16 @@ class Model extends javascript_model_1.Model {
                 schema(this).keys.forEach((key) => {
                     if (!utils_1.default.isUndefined(data[key.name])) {
                         this[key.name] = data[key.name];
-                        if ((key.type.Constructor.isModel === true || key.type.Constructor.isCollection === true) && depth > 0) {
-                            promises.push(this[key.name].reload(lodash_1.extend({}, options, {
-                                depth: depth - 1
-                            })).then((child) => {
-                                this[key.name] = child;
-                            }));
+                        if ((key.type.Constructor.isModel === true || key.type.Constructor.isCollection === true) && (populate.length > 0)) {
+                            const populateOptions = getPopulateOptions(key.name);
+                            if (populateOptions) {
+                                promises.push(this[key.name].reload({
+                                    findOptions: populateOptions.findOptions || {},
+                                    populate: populateOptions.populate || []
+                                }).then((child) => {
+                                    this[key.name] = child;
+                                }));
+                            }
                         }
                     }
                 });
@@ -138,6 +142,23 @@ class Model extends javascript_model_1.Model {
         }).then(() => {
             return utils_1.default.hook(this, 'afterReload');
         });
+        /**
+         * Get populate options
+         */
+        function getPopulateOptions(key) {
+            const length = populate.length;
+            for (let i = 0; i < length; i++) {
+                if (utils_1.default.isString(populate[i]) && populate[i] === key) {
+                    return {
+                        path: populate[i]
+                    };
+                }
+                else if (populate[i] && populate[i].path === key) {
+                    return populate[i];
+                }
+            }
+            return utils_1.default.undefined;
+        }
     }
     /**
      * Save data
