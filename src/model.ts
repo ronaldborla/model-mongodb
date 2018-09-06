@@ -130,7 +130,10 @@ export default class Model extends Base {
       }
       return new this(data);
     }).then((model: Model) => {
-      return utils.isUndefined(reloadOptions) ? model : model.reload(reloadOptions);
+      if (model && !utils.isUndefined(reloadOptions)) {
+        return model.reload(reloadOptions);
+      }
+      return model;
     });
   }
 

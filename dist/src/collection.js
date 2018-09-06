@@ -24,7 +24,10 @@ class Collection extends javascript_model_1.Collection {
     static find(query, options, reloadOptions) {
         const collection = new this();
         return pull(this.Model.schema.modeljs.db.collection(this.collection).find(query || {}, options)).then((cursor) => {
-            return utils_1.default.isUndefined(reloadOptions) ? collection : collection.reload(reloadOptions);
+            if (collection.length > 0 && !utils_1.default.isUndefined(reloadOptions)) {
+                return collection.reload(reloadOptions);
+            }
+            return collection;
         });
         /**
          * Pull next data

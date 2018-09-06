@@ -73,7 +73,10 @@ class Model extends javascript_model_1.Model {
             }
             return new this(data);
         }).then((model) => {
-            return utils_1.default.isUndefined(reloadOptions) ? model : model.reload(reloadOptions);
+            if (model && !utils_1.default.isUndefined(reloadOptions)) {
+                return model.reload(reloadOptions);
+            }
+            return model;
         });
     }
     /**

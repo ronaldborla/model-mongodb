@@ -41,7 +41,10 @@ export default class Collection extends Base {
   static find(query?: FilterQuery<any>, options?: FindOneOptions, reloadOptions?: ReloadOptions): Promise<Collection> {
     const collection = new this();
     return pull((this.Model.schema.modeljs.db.collection(this.collection) as MongoCollection).find(query || {}, options)).then((cursor: Cursor) => {
-      return utils.isUndefined(reloadOptions) ? collection : collection.reload(reloadOptions);
+      if (collection.length > 0 && !utils.isUndefined(reloadOptions)) {
+        return collection.reload(reloadOptions);
+      }
+      return collection;
     });
 
     /**
