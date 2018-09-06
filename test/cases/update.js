@@ -58,12 +58,6 @@ function updateDocuments(config) {
                 populate: [
                     'address',
                     {
-                        findOptions: {
-                            projection: {
-                                _id: 1,
-                                address: 1
-                            }
-                        },
                         path: 'user',
                         populate: [
                             'address'

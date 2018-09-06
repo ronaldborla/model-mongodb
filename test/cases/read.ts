@@ -89,5 +89,11 @@ export default function readDocuments(config: any): void {
         });
       });
     });
+    it('should return `null` if model is not found', (done: Function) => {
+      User.find({ email: '...' }).then((user: User) => {
+        assert.strictEqual(user, null, '`user` must be null');
+        done();
+      });
+    });
   });
 }

@@ -51,7 +51,9 @@ export default class Collection extends Base {
       return cursor.hasNext().then((next: boolean) => {
         if (next === true) {
           return cursor.next().then((data: any) => {
-            collection.push(data);
+            if (data) {
+              collection.push(data);
+            }
             return pull(cursor);
           });
         } else {

@@ -68,6 +68,9 @@ class Model extends javascript_model_1.Model {
      */
     static find(query, options, reloadOptions) {
         return this.schema.modeljs.db.collection(this.Collection.collection).findOne(query || {}, options).then((data) => {
+            if (!data) {
+                return null;
+            }
             return new this(data);
         }).then((model) => {
             return utils_1.default.isUndefined(reloadOptions) ? model : model.reload(reloadOptions);

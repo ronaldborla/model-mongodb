@@ -33,7 +33,9 @@ class Collection extends javascript_model_1.Collection {
             return cursor.hasNext().then((next) => {
                 if (next === true) {
                     return cursor.next().then((data) => {
-                        collection.push(data);
+                        if (data) {
+                            collection.push(data);
+                        }
                         return pull(cursor);
                     });
                 }

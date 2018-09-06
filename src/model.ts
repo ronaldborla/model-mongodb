@@ -125,6 +125,9 @@ export default class Model extends Base {
    */
   static find(query?: FilterQuery<any>, options?: FindOneOptions, reloadOptions?: ReloadOptions): Promise<Model> {
     return (this.schema.modeljs.db as Db).collection(this.Collection.collection).findOne(query || {}, options).then((data: any) => {
+      if (!data) {
+        return null;
+      }
       return new this(data);
     }).then((model: Model) => {
       return utils.isUndefined(reloadOptions) ? model : model.reload(reloadOptions);

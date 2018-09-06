@@ -6,6 +6,7 @@ const mongodb_1 = require("mongodb");
 const dist_1 = require("../../dist");
 const address_model_1 = require("../src/address.model");
 const company_model_1 = require("../src/company.model");
+const user_model_1 = require("../src/user.model");
 const users_collection_1 = require("../src/users.collection");
 /**
  * Read documents
@@ -87,6 +88,12 @@ function readDocuments(config) {
                     chai_1.assert.typeOf(address.street, 'string', 'address `street` must be a string');
                     chai_1.assert.typeOf(address.zip_code, 'string', 'zip_code `street` must be a string');
                 });
+            });
+        });
+        it('should return `null` if model is not found', (done) => {
+            user_model_1.default.find({ email: '...' }).then((user) => {
+                chai_1.assert.strictEqual(user, null, '`user` must be null');
+                done();
             });
         });
     });
