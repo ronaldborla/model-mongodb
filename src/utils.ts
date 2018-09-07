@@ -42,6 +42,7 @@ export class Utils extends Base {
    */
   isPromise(variable: any): boolean {
     return (variable instanceof Promise) || (
+      variable &&
       this.isObject(variable) &&
       this.isFunction(variable.then) &&
       this.isFunction(variable.catch)

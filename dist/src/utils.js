@@ -39,7 +39,8 @@ class Utils extends javascript_model_1.Utils {
      * Check if promise
      */
     isPromise(variable) {
-        return (variable instanceof Promise) || (this.isObject(variable) &&
+        return (variable instanceof Promise) || (variable &&
+            this.isObject(variable) &&
             this.isFunction(variable.then) &&
             this.isFunction(variable.catch));
     }
