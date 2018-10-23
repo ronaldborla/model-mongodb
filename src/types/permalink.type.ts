@@ -1,4 +1,4 @@
-import { get, isFunction, isObject, isString, isUndefined, trim } from 'lodash';
+import { deburr, get, isFunction, isObject, isString, isUndefined, trim } from 'lodash';
 import { ObjectId } from 'mongodb';
 import Collection from '../collection';
 import Exception from '../exception';
@@ -8,13 +8,11 @@ import ModelJS from '../index';
 import Schema from '../schema';
 import { TypeConfig } from '../type';
 
-const latinize = require('latinize');
-
 /**
  * Cast to permalink
  */
 function cast(text: string): string {
-  return trim(latinize(text)
+  return trim(deburr(text)
     .replace(/["'`]/g, '')
     .replace(/[^A-Za-z0-9]/g, '-')
     .replace(/--+/g, '-')
@@ -97,7 +95,7 @@ export default class Permalink {
       });
       promises.push(schema.Model.Collection.find({}, {
         projection: projection
-      }).then((collection: Collection) => {
+      }).then((collection: Collection<Model>) => {
         collection.forEach((item: Model) => {
           Object.keys(projection).forEach((key: string) => {
             if (item[key] instanceof Permalink) {

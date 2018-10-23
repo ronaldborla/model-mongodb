@@ -19,7 +19,7 @@ import { ValidationResult } from './validator';
 /**
  * Collection
  */
-export default class Collection extends Base {
+export default class Collection<T> extends Base<T> {
 
   /**
    * Get collection name
@@ -38,7 +38,7 @@ export default class Collection extends Base {
   /**
    * Find multiple
    */
-  static find(query?: FilterQuery<any>, options?: FindOneOptions, reloadOptions?: ReloadOptions): Promise<Collection> {
+  static find(query?: FilterQuery<any>, options?: FindOneOptions, reloadOptions?: ReloadOptions): Promise<Collection<any>> {
     const collection = new this();
     return pull((this.Model.schema.modeljs.db.collection(this.collection) as MongoCollection).find(query || {}, options)).then((cursor: Cursor) => {
       if (collection.length > 0 && !utils.isUndefined(reloadOptions)) {
@@ -71,8 +71,8 @@ export default class Collection extends Base {
    */
   delete(options?: DeleteOptions): Promise<null> {
     return utils.hook(this, 'beforeDelete').then(() => {
-      return Promise.all(this.map((model: Model) => {
-        return model.delete(options);
+      return Promise.all(this.map((model: any) => {
+        return (model as Model).delete(options);
       })).then(() => {
         return null;
       });
@@ -88,7 +88,7 @@ export default class Collection extends Base {
    */
   reload(options?: ReloadOptions): Promise<this> {
     return utils.hook(this, 'beforeReload').then(() => {
-      return Promise.all(this.map((model: Model) => {
+      return Promise.all(this.map((model: any) => {
         return model.reload(options);
       })).then(() => {
         return this;
@@ -103,8 +103,8 @@ export default class Collection extends Base {
    */
   save(options?: SaveOptions): Promise<this> {
     return utils.hook(this, 'beforeSave').then(() => {
-      return Promise.all(this.map((model: Model) => {
-        return model.save(options);
+      return Promise.all(this.map((model: any) => {
+        return (model as Model).save(options);
       })).then(() => {
         return this;
       });
@@ -118,8 +118,8 @@ export default class Collection extends Base {
    */
   validate(options?: ValidateOptions): Promise<Array<Array<ValidationResult>>> {
     return utils.hook(this, 'beforeValidate').then(() => {
-      return Promise.all(this.map((model: Model) => {
-        return model.validate(options);
+      return Promise.all(this.map((model: any) => {
+        return (model as Model).validate(options);
       }));
     }).then((arrayOfValidationResults: Array<Array<ValidationResult>>) => {
       return utils.hook(this, 'afterValidate').then(() => {

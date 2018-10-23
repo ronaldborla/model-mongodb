@@ -4,12 +4,11 @@ const lodash_1 = require("lodash");
 const mongodb_1 = require("mongodb");
 const exception_1 = require("../exception");
 const type_1 = require("../type");
-const latinize = require('latinize');
 /**
  * Cast to permalink
  */
 function cast(text) {
-    return lodash_1.trim(latinize(text)
+    return lodash_1.trim(lodash_1.deburr(text)
         .replace(/["'`]/g, '')
         .replace(/[^A-Za-z0-9]/g, '-')
         .replace(/--+/g, '-')

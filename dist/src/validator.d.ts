@@ -32,7 +32,7 @@ export declare class ValidationResult {
     /**
      * The value being validated
      */
-    value: Model | Collection | any;
+    value: Model | Collection<Model> | any;
     constructor(data?: any);
     /**
      * Flatten validation results

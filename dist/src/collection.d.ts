@@ -5,7 +5,7 @@ import { ValidationResult } from './validator';
 /**
  * Collection
  */
-export default class Collection extends Base {
+export default class Collection<T> extends Base<T> {
     /**
      * Get collection name
      */
@@ -17,7 +17,7 @@ export default class Collection extends Base {
     /**
      * Find multiple
      */
-    static find(query?: FilterQuery<any>, options?: FindOneOptions, reloadOptions?: ReloadOptions): Promise<Collection>;
+    static find(query?: FilterQuery<any>, options?: FindOneOptions, reloadOptions?: ReloadOptions): Promise<Collection<any>>;
     /**
      * Delete multiple
      */

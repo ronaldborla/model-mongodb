@@ -280,9 +280,9 @@ export default class Model extends Base {
           }
         } else if (key.type.Constructor.isCollection === true) {
           if (depth > 0) {
-            promises.push((value as Collection).save(extend({}, options, {
+            promises.push((value as Collection<Model>).save(extend({}, options, {
               depth: depth - 1
-            })).then((children: Collection) => {
+            })).then((children: Collection<Model>) => {
               const children_ids = [];
               children.forEach((child: Model) => {
                 const child_id = child[id(child).name];
@@ -296,7 +296,7 @@ export default class Model extends Base {
             }));
           } else {
             const children_ids = [];
-            (value as Collection).forEach((child: Model) => {
+            (value as Collection<Model>).forEach((child: Model) => {
               const child_id = child[id(child).name];
               if (!utils.isUndefined(child_id)) {
                 children_ids.push(child_id);
@@ -379,7 +379,7 @@ export default class Model extends Base {
               });
             } else if (depth > 0 && value instanceof Collection) {
               return new Promise((resolve) => {
-                (value as Collection).validate(extend({}, options, {
+                (value as Collection<Model>).validate(extend({}, options, {
                   depth: depth - 1
                 })).then((child: Array<Array<ValidationResult>>) => {
                   result.child = child;

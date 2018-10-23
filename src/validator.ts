@@ -40,7 +40,7 @@ export class ValidationResult {
   /**
    * The value being validated
    */
-  public value: Model | Collection | any;
+  public value: Model | Collection<Model> | any;
 
   constructor(data?: any) {
     ['child', 'key', 'messages', 'value'].forEach((name: string) => {
