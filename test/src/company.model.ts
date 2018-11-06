@@ -9,6 +9,9 @@ export default class Company extends Model {
   public static schema: any = {
     address: 'Address',
     name: {
+      filters: [
+        'trim:end'
+      ],
       type: String,
       validators: ['required']
     },

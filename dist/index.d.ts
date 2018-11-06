@@ -1,6 +1,6 @@
 import Collection from './src/collection';
 import Exception from './src/exception';
-import Key from './src/key';
+import Key, { KeyFilter } from './src/key';
 import Model, { DeleteOptions, PopulateOptions, SaveOptions, ReloadOptions, ValidateOptions } from './src/model';
 import ModelJS from './src/index';
 import Schema from './src/schema';
@@ -11,6 +11,6 @@ import Id from './src/types/id.type';
 import Password from './src/types/password.type';
 import Permalink from './src/types/permalink.type';
 import Timestamp from './src/types/timestamp.type';
-export { Collection, DeleteOptions, Exception, Key, Model, ModelJS, PopulateOptions, ReloadOptions, SaveOptions, Schema, Type, TypeConfig, TypeConfigInterface, Utils, utils, ValidateOptions, ValidationResult, Validator, ValidatorInterface };
+export { Collection, DeleteOptions, Exception, Key, KeyFilter, Model, ModelJS, PopulateOptions, ReloadOptions, SaveOptions, Schema, Type, TypeConfig, TypeConfigInterface, Utils, utils, ValidateOptions, ValidationResult, Validator, ValidatorInterface };
 export { Id, Password, Permalink, Timestamp };
 export { AfterDelete, AfterInsert, AfterReload, AfterSave, AfterUpdate, AfterValidate, BeforeDelete, BeforeInsert, BeforeReload, BeforeSave, BeforeUpdate, BeforeValidate } from './src/hooks';

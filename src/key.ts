@@ -6,9 +6,23 @@ import Validator from './validator';
 import utils from './utils';
 
 /**
+ * Key Filter
+ */
+export interface KeyFilter {
+  callback: (value: any, key: Key, options?: Array<any>) => any;
+  name?: string;
+  options?: Array<any>;
+}
+
+/**
  * Key
  */
 export default class Key extends Base {
+
+  /**
+   * Filters
+   */
+  public filters: Array<KeyFilter> = [];
 
   /**
    * The Type
@@ -25,10 +39,72 @@ export default class Key extends Base {
    */
   constructor(schema: Schema, name: string, object: any) {
     super(schema, name, object);
-    let validators = object.validators || object.validator || [];
+    let filters = object.filters || object.filter || [],
+        validators = object.validators || object.validator || [];
+    if (!utils.isUndefined(filters) && !utils.isArray(filters)) {
+      filters = [filters];
+    }
     if (!utils.isUndefined(validators) && !utils.isArray(validators)) {
       validators = [validators];
     }
+    this.loadFilters(filters);
+    this.loadValidators(validators);
+  }
+
+  /**
+   * Override cast
+   */
+  cast(model: Model, value: any): any {
+    const length = this.filters.length;
+    if (length > 0) {
+      for (let i = 0; i < length; i++) {
+        value = this.filters[i].callback.apply(model, [value, this, this.filters[i].options]);
+      }
+    }
+    return Base.prototype.cast.apply(this, [model, value]);
+  }
+
+  /**
+   * Load filters
+   */
+  loadFilters(filters: Array<any>): this {
+    this.filters = filters.map((data: any) => {
+      let filter: any = {};
+      if (utils.isString(data)) {
+        filter.name = data;
+      } else if (utils.isFunction(data)) {
+        filter.callback = data;
+      } else {
+        filter = data;
+      }
+      if (utils.isString(filter.name)) {
+        const arr = filter.name.split(':');
+        if (utils.isUndefined(this.schema.modeljs.filters[arr[0]])) {
+          throw new this.schema.modeljs.Exception('Filter `' + arr[0] + '` is not registered');
+        }
+        filter = extend({}, this.schema.modeljs.filters[arr[0]], filter);
+        if (!utils.isUndefined(arr[1]) && arr[1] && utils.isUndefined(filter.options)) {
+          filter.options = arr[1].split(',');
+        }
+      }
+      if (utils.isUndefined(filter.callback)) {
+        throw new this.schema.modeljs.Exception('Filter must have a callback');
+      }
+      if (!utils.isFunction(filter.callback)) {
+        throw new this.schema.modeljs.Exception('Filter callback must be a function');
+      }
+      if (!utils.isUndefined(filter.options) && !utils.isArray(filter.options)) {
+        throw new this.schema.modeljs.Exception('Filter options must be an array');
+      }
+      return filter;
+    });
+    return this;
+  }
+
+  /**
+   * Load validators
+   */
+  loadValidators(validators: Array<any>): this {
     this.validators = validators.map((data: any) => {
       if (data instanceof Validator) {
         return data;
@@ -48,7 +124,7 @@ export default class Key extends Base {
         if (utils.isUndefined(this.schema.modeljs.validators[arr[0]])) {
           throw new this.schema.modeljs.Exception('Validator `' + arr[0] + '` is not registered');
         }
-        validator = extend(this.schema.modeljs.validators[arr[0]], validator);
+        validator = extend({}, this.schema.modeljs.validators[arr[0]], validator);
         if (!utils.isUndefined(arr[1]) && arr[1] && utils.isUndefined(validator.options)) {
           validator.options = arr[1].split(',');
         }
@@ -76,12 +152,13 @@ export default class Key extends Base {
       if (!hasCallback && !hasRegex) {
         throw new this.schema.modeljs.Exception('Validator must have a callback or regex');
       }
-      validator = new schema.modeljs.Validator(this, validator);
+      validator = new this.schema.modeljs.Validator(this, validator);
       if (utils.isFunction(init)) {
         init.apply(validator, []);
       }
       return validator;
     });
+    return this;
   }
 
   /**

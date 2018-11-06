@@ -16,6 +16,12 @@ const password_type_1 = require("./types/password.type");
 const permalink_type_1 = require("./types/permalink.type");
 const timestamp_type_1 = require("./types/timestamp.type");
 /**
+ * Import filters
+ */
+const lower_filter_1 = require("./filters/lower.filter");
+const trim_filter_1 = require("./filters/trim.filter");
+const upper_filter_1 = require("./filters/upper.filter");
+/**
  * Import validators
  */
 const email_validator_1 = require("./validators/email.validator");
@@ -30,9 +36,17 @@ class ModelJS extends javascript_model_1.ModelJS {
     constructor() {
         super();
         /**
+         * Attachments
+         */
+        this.attachments = {};
+        /**
          * Override Exception
          */
         this.Exception = exception_1.default;
+        /**
+         * Filters
+         */
+        this.filters = {};
         /**
          * Override Key
          */
@@ -63,9 +77,24 @@ class ModelJS extends javascript_model_1.ModelJS {
             permalink_type_1.default,
             timestamp_type_1.default
         ]);
+        [lower_filter_1.default, trim_filter_1.default, upper_filter_1.default].forEach((filter) => {
+            this.filters[filter.name] = filter;
+        });
         [email_validator_1.default, enum_validator_1.default, max_validator_1.default, min_validator_1.default, required_validator_1.default].forEach((validator) => {
             this.validators[validator.name] = validator;
         });
+    }
+    /**
+     * Attach anything
+     */
+    attach(key, value) {
+        if (utils_1.default.isUndefined(value)) {
+            return this.attachments[key];
+        }
+        else {
+            this.attachments[key] = value;
+            return this;
+        }
     }
     /**
      * Close database

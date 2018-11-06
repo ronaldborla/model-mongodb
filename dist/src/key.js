@@ -14,13 +14,77 @@ class Key extends javascript_model_1.Key {
     constructor(schema, name, object) {
         super(schema, name, object);
         /**
+         * Filters
+         */
+        this.filters = [];
+        /**
          * Validators
          */
         this.validators = [];
-        let validators = object.validators || object.validator || [];
+        let filters = object.filters || object.filter || [], validators = object.validators || object.validator || [];
+        if (!utils_1.default.isUndefined(filters) && !utils_1.default.isArray(filters)) {
+            filters = [filters];
+        }
         if (!utils_1.default.isUndefined(validators) && !utils_1.default.isArray(validators)) {
             validators = [validators];
         }
+        this.loadFilters(filters);
+        this.loadValidators(validators);
+    }
+    /**
+     * Override cast
+     */
+    cast(model, value) {
+        const length = this.filters.length;
+        if (length > 0) {
+            for (let i = 0; i < length; i++) {
+                value = this.filters[i].callback.apply(model, [value, this, this.filters[i].options]);
+            }
+        }
+        return javascript_model_1.Key.prototype.cast.apply(this, [model, value]);
+    }
+    /**
+     * Load filters
+     */
+    loadFilters(filters) {
+        this.filters = filters.map((data) => {
+            let filter = {};
+            if (utils_1.default.isString(data)) {
+                filter.name = data;
+            }
+            else if (utils_1.default.isFunction(data)) {
+                filter.callback = data;
+            }
+            else {
+                filter = data;
+            }
+            if (utils_1.default.isString(filter.name)) {
+                const arr = filter.name.split(':');
+                if (utils_1.default.isUndefined(this.schema.modeljs.filters[arr[0]])) {
+                    throw new this.schema.modeljs.Exception('Filter `' + arr[0] + '` is not registered');
+                }
+                filter = lodash_1.extend({}, this.schema.modeljs.filters[arr[0]], filter);
+                if (!utils_1.default.isUndefined(arr[1]) && arr[1] && utils_1.default.isUndefined(filter.options)) {
+                    filter.options = arr[1].split(',');
+                }
+            }
+            if (utils_1.default.isUndefined(filter.callback)) {
+                throw new this.schema.modeljs.Exception('Filter must have a callback');
+            }
+            if (!utils_1.default.isFunction(filter.callback)) {
+                throw new this.schema.modeljs.Exception('Filter callback must be a function');
+            }
+            if (!utils_1.default.isUndefined(filter.options) && !utils_1.default.isArray(filter.options)) {
+                throw new this.schema.modeljs.Exception('Filter options must be an array');
+            }
+            return filter;
+        });
+        return this;
+    }
+    /**
+     * Load validators
+     */
+    loadValidators(validators) {
         this.validators = validators.map((data) => {
             if (data instanceof validator_1.default) {
                 return data;
@@ -43,7 +107,7 @@ class Key extends javascript_model_1.Key {
                 if (utils_1.default.isUndefined(this.schema.modeljs.validators[arr[0]])) {
                     throw new this.schema.modeljs.Exception('Validator `' + arr[0] + '` is not registered');
                 }
-                validator = lodash_1.extend(this.schema.modeljs.validators[arr[0]], validator);
+                validator = lodash_1.extend({}, this.schema.modeljs.validators[arr[0]], validator);
                 if (!utils_1.default.isUndefined(arr[1]) && arr[1] && utils_1.default.isUndefined(validator.options)) {
                     validator.options = arr[1].split(',');
                 }
@@ -69,12 +133,13 @@ class Key extends javascript_model_1.Key {
             if (!hasCallback && !hasRegex) {
                 throw new this.schema.modeljs.Exception('Validator must have a callback or regex');
             }
-            validator = new schema.modeljs.Validator(this, validator);
+            validator = new this.schema.modeljs.Validator(this, validator);
             if (utils_1.default.isFunction(init)) {
                 init.apply(validator, []);
             }
             return validator;
         });
+        return this;
     }
     /**
      * Validate key

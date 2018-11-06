@@ -1,6 +1,6 @@
 import Collection from './src/collection';
 import Exception from './src/exception';
-import Key from './src/key';
+import Key, { KeyFilter } from './src/key';
 import Model, { DeleteOptions, PopulateOptions, SaveOptions, ReloadOptions, ValidateOptions } from './src/model';
 import ModelJS from './src/index';
 import Schema from './src/schema';
@@ -18,6 +18,7 @@ export {
   DeleteOptions,
   Exception,
   Key,
+  KeyFilter,
   Model,
   ModelJS,
   PopulateOptions,

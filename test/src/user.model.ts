@@ -11,6 +11,10 @@ export default class User extends Model {
     birth_date: Date,
     company: 'Company',
     email: {
+      filters: [
+        'lower',
+        'trim'
+      ],
       type: String,
       validators: [
         'required',
@@ -18,10 +22,16 @@ export default class User extends Model {
       ]
     },
     first_name: {
+      filters: [
+        'trim:start'
+      ],
       type: String,
       validators: ['required']
     },
     last_name: {
+      filters: [
+        'trim:end'
+      ],
       type: String,
       validators: ['required']
     },

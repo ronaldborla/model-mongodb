@@ -3,8 +3,51 @@ import { assert } from 'chai';
 import { address, company, date, internet, name, random } from 'faker';
 import Addresses from '../src/addresses.collection';
 import Companies from '../src/companies.collection';
+import User from '../src/user.model';
 import Users from '../src/users.collection';
 import { ValidationResult } from '../../dist';
+
+/**
+ * Has char codes
+ */
+function hasCharCodes(text: string, low: number, high: number): boolean {
+  const length = text.length;
+  for (let i = 0; i < length; i++) {
+    const code = text.charCodeAt(i);
+    if (code >= low && code <= high) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Has leading space
+ */
+function hasLeadingSpace(text: string): boolean {
+  return text.charAt(0) === ' ';
+}
+
+/**
+ * Has lower
+ */
+function hasLower(text: string): boolean {
+  return hasCharCodes(text, 97, 122);
+}
+
+/**
+ * Has trailing space
+ */
+function hasTrailingSpace(text: string): boolean {
+  return text.charAt(text.length - 1) === ' ';
+}
+
+/**
+ * Has upper
+ */
+function hasUpper(text: string): boolean {
+  return hasCharCodes(text, 65, 90);
+}
 
 /**
  * Create documents
@@ -21,7 +64,7 @@ export default function createDocuments(config: any): void {
             city: address.city(),
             latitude: parseFloat(address.latitude()),
             longitude: parseFloat(address.longitude()),
-            street: address.streetAddress(),
+            street: '  ' + address.streetAddress() + ' ',
             zip_code: address.zipCode(),
           },
           birth_date: date.past(50),
@@ -33,11 +76,11 @@ export default function createDocuments(config: any): void {
               street: address.streetAddress(),
               zip_code: address.zipCode(),
             },
-            name: company.companyName()
+            name: '   ' + company.companyName() + '  '
           },
-          email: internet.email(),
-          first_name: name.firstName(),
-          last_name: name.lastName(),
+          email: ' ' + internet.email() + ' ',
+          first_name: '  ' + name.firstName(),
+          last_name: name.lastName() + '  ',
           password: config.user.password || internet.password(8, true),
           sex: ['male', 'female'][random.number(1)]
         });
@@ -53,6 +96,18 @@ export default function createDocuments(config: any): void {
       }).catch((err: Error) => {
         assert.isNotOk(err, 'failed to validate documents');
         done();
+      });
+    });
+    it('should verify that filters are working correctly', () => {
+      users.forEach((user: User) => {
+        assert.isNotTrue(hasLower(user.address.city), 'City must be uppercased');
+        assert.isNotTrue(hasLeadingSpace(user.address.street) || hasTrailingSpace(user.address.street), 'Street must be trimmed');
+        assert.isTrue(hasLeadingSpace(user.company.name), 'Company name must have leading spaces');
+        assert.isNotTrue(hasTrailingSpace(user.company.name), 'Company name must not contain any trailing spaces');
+        assert.isNotTrue(hasUpper(user.email), 'Email must be lowercased');
+        assert.isNotTrue(hasLeadingSpace(user.email) || hasTrailingSpace(user.email), 'City must be trimmed');
+        assert.isNotTrue(hasLeadingSpace(user.first_name), 'First name must not contain any leading spaces');
+        assert.isNotTrue(hasTrailingSpace(user.last_name), 'Last name must not contain any trailing spaces');
       });
     });
     it('should create users, companies, and addresses', (done: Function) => {

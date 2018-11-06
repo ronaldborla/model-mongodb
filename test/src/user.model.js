@@ -18,6 +18,10 @@ User.schema = {
     birth_date: Date,
     company: 'Company',
     email: {
+        filters: [
+            'lower',
+            'trim'
+        ],
         type: String,
         validators: [
             'required',
@@ -25,10 +29,16 @@ User.schema = {
         ]
     },
     first_name: {
+        filters: [
+            'trim:start'
+        ],
         type: String,
         validators: ['required']
     },
     last_name: {
+        filters: [
+            'trim:end'
+        ],
         type: String,
         validators: ['required']
     },

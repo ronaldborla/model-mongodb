@@ -1,6 +1,6 @@
 import { ModelJS as Base } from 'javascript-model';
 import Exception from './exception';
-import Key from './key';
+import Key, { KeyFilter } from './key';
 import Schema from './schema';
 import Type, { TypeConfig } from './type';
 import Validator, { ValidationResult, ValidatorInterface } from './validator';
@@ -13,6 +13,12 @@ import Id from './types/id.type';
 import Password from './types/password.type';
 import Permalink from './types/permalink.type';
 import Timestamp from './types/timestamp.type';
+/**
+ * Import filters
+ */
+import lower from './filters/lower.filter';
+import trim from './filters/trim.filter';
+import upper from './filters/upper.filter';
 /**
  * Import validators
  */
@@ -28,9 +34,19 @@ import required from './validators/required.validator';
 export default class ModelJS extends Base {
 
   /**
+   * Attachments
+   */
+  public attachments: {[key: string]: any} = {};
+
+  /**
    * Override Exception
    */
   public Exception: any = Exception;
+
+  /**
+   * Filters
+   */
+  public filters: any = {};
 
   /**
    * Override Key
@@ -80,9 +96,24 @@ export default class ModelJS extends Base {
       Permalink,
       Timestamp
     ]);
+    [lower, trim, upper].forEach((filter: KeyFilter) => {
+      this.filters[filter.name] = filter;
+    });
     [email, enumv, max, min, required].forEach((validator: ValidatorInterface) => {
       this.validators[validator.name] = validator;
     });
+  }
+
+  /**
+   * Attach anything
+   */
+  attach<T>(key: string, value?: T): this | T {
+    if (utils.isUndefined(value)) {
+      return this.attachments[key];
+    } else {
+      this.attachments[key] = value;
+      return this;
+    }
   }
 
   /**

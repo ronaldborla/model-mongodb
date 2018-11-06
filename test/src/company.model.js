@@ -10,6 +10,9 @@ Company.Collection = 'Companies';
 Company.schema = {
     address: 'Address',
     name: {
+        filters: [
+            'trim:end'
+        ],
         type: String,
         validators: ['required']
     },

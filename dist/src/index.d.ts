@@ -5,9 +5,19 @@ import { Db, MongoClient, MongoClientOptions } from 'mongodb';
  */
 export default class ModelJS extends Base {
     /**
+     * Attachments
+     */
+    attachments: {
+        [key: string]: any;
+    };
+    /**
      * Override Exception
      */
     Exception: any;
+    /**
+     * Filters
+     */
+    filters: any;
     /**
      * Override Key
      */
@@ -41,6 +51,10 @@ export default class ModelJS extends Base {
      */
     db: Db;
     constructor();
+    /**
+     * Attach anything
+     */
+    attach<T>(key: string, value?: T): this | T;
     /**
      * Close database
      */
